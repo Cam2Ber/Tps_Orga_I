@@ -1,0 +1,34 @@
+{
+  "name": "sd-dev",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "options": ["--platform=linux/amd64"]
+  },
+  "remoteUser": "ubuntu",
+  "updateRemoteUserUID": true,
+  "initializeCommand": "bash -lc 'if command -v xhost >/dev/null 2>&1; then xhost +local:root || true; fi'",
+  "features": {},
+  "runArgs": [
+    "--platform=linux/amd64",
+    "--env=DISPLAY=${localEnv:DISPLAY}"
+  ],
+  "containerEnv": {
+    "WINIT_UNIX_BACKEND": "x11",
+    "WAYLAND_DISPLAY": ""
+  },
+  "remoteEnv": {
+    "WINIT_UNIX_BACKEND": "x11",
+    "WAYLAND_DISPLAY": ""
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "twint.hdl-studio",
+        "surfer-project.surfer",
+        "Hudson-River-Trading.vscode-slang",
+        "lramseyer.vaporview",
+        "kukdh1.verible-formatter"
+      ]
+    }
+  }
+}

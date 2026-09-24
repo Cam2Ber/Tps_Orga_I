@@ -1,0 +1,34 @@
+{
+  "name": "sd-dev",
+  "image": "docker.io/twint/sd:latest",
+  "remoteUser": "ubuntu",
+  "updateRemoteUserUID": true,
+  "initializeCommand": "xhost +local:root",
+  "features": {},
+  "runArgs": [
+    "--platform=linux/amd64",
+    "--net=host",
+    "--ipc=host",
+    "--env=DISPLAY=${localEnv:DISPLAY}",
+    "--volume=/tmp/.X11-unix:/tmp/.X11-unix"
+  ],
+  "containerEnv": {
+    "WINIT_UNIX_BACKEND": "x11",
+    "WAYLAND_DISPLAY": ""
+  },
+  "remoteEnv": {
+    "WINIT_UNIX_BACKEND": "x11",
+    "WAYLAND_DISPLAY": ""
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "twint.hdl-studio",
+        "surfer-project.surfer",
+        "Hudson-River-Trading.vscode-slang",
+        "lramseyer.vaporview",
+        "kukdh1.verible-formatter"
+      ]
+    }
+  }
+}
