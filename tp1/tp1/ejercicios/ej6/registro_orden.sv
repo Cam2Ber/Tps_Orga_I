@@ -13,7 +13,10 @@ module registro_orden (
             rd_q <= '0;
             op_q <= '0;
         end else if (capture_en) begin
-            // COMPLETAR: guardar la orden.
+            rs1_q <= rs1;
+            rs2_q <= rs2;
+            rd_q <= rd;
+            op_q <= opcode;
         end
     end
 endmodule

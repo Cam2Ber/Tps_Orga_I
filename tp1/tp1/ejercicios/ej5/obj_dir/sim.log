@@ -1,0 +1,5 @@
+PASS ej5: secuencia, captura Mealy, start ocupado y reset
+- fsm_tb.sv:34: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05
+- Verilator: $finish at 91ns; walltime 0.000 s; speed 687.940 us/s
+- Verilator: cpu 0.000 s on 1 threads; allocated 4 MB

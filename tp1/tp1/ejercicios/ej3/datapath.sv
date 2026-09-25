@@ -13,13 +13,21 @@ module datapath (
     logic [31:0] rf_rs1_data, rf_rs2_data;
     alu_if alu_io ();
     alu u_alu (.alu_io(alu_io));
+
+    assign alu_io.operand_a = rf_rs1_data;
+    assign alu_io.operand_b = rf_rs2_data;
+    assign flags = alu_io.flags;
+    assign regA_idx = rf_we == 0 ? rs1 : rd;
+    assign result = alu_io.result;
+
     reg_file u_reg_file (
         .clk(clk), .rst(rst),
         .regA_idx(regA_idx), .regA_din(result),
         .regA_dout(rf_rs1_data), .regA_we(rf_we),
         .regB_idx(rs2), .regB_din(32'b0),
         .regB_dout(rf_rs2_data), .regB_we(1'b0)
-    );
+    );    
+
     // COMPLETAR: conectar operandos, resultado, flags e índice A.
     // El cast del opcode está provisto.
     assign alu_io.opcode = alu_op_e'(opcode);
