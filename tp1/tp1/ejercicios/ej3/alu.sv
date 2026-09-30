@@ -70,3 +70,23 @@ module alu #(parameter int DATA_WIDTH = 32) (alu_if.alu alu_io);
     assign es_cero = opcode_valido == 1'b0 ? 1'b0 : es_cero;
     assign alu_io.flags = {{{es_cero, es_negativo}, carry_resultado}, overflow_resultado};
 endmodule
+
+/*
+10 + 20 = 32'b0000 0000 0000 0000 0000 0000 0001 1110 (30 en base decimal)
+Z = 1'b0, N = 1'b0, C = 1'b0, V = 1'b0
+
+10 - 20 = 32'b1111 1111 1111 1111 1111 1111 1111 0110 (-10 en base decimal)
+Z = 1'b0, N = 1'b1, C = 1'b1, V = 1'b0
+
+10 - 10 = 32'b0000 0000 0000 0000 0000 0000 0000 0000 (0 en base decimal)
+Z = 1'b1, N = 1'b0, C = 1'b0, V = 1'b0
+
+32'hFFFF_FFFF + 1 = 32'b0000 0000 0000 0000 0000 0000 0000 0000 (0 en base decimal)
+Z = 1'b1, N = 1'b0, C = 1'b1, V = 1'b1
+
+32'h7FFF_FFFF + 1 = 32'b1000 0000 0000 0000 0000 0000 0000 0000 (-2147483648 en decimal)
+Z = 1'b0, N = 1'b1, C = 1'b0, V = 1'b1
+
+32'h8000_0000 - 1 = 32'b0111 1111 1111 1111 1111 1111 1111 1111 (2147483647 en decimal)
+Z = 1'b0, N = 1'b0, C = 1'b0, V = 1'b1
+*/

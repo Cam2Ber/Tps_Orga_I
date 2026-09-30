@@ -65,5 +65,7 @@ Después del siguiente flanco                |   32'h0000 0014   |   32'h0000 00
 Después de escribir 99 en R2 por A          |   32'h0000 0014   |   32'h0000 0014   |   32'h0000 0063   |
 Después del siguiente flanco sin escritura  |   32'h0000 0063   |   32'h0000 0063   |   32'h0000 0063   |
 
+En el primer clock se tiene B=2, A=1, reg_1=10, reg_2=20. dout de A por lo tanto es reg_1 y el de B reg_2 por los indices. Se aplica un cambio de indice de A para reg 2 igual a 20, pero como es antes del clock todavia no aplica, pasa el clock y ambas apuntan al 20. Sin embargo se requiere un ciclo extra para cambiar el valor actual al que esta mostrando A en el dout_A, una vez que ocurre finalmente se realiza un write sobre registro 2, pero el systema requiere que pase un clock para que afecte el cambio a el dout, y como A y B leen de  2 con el cambio ambos se ven afectados un ciclo despues, en el ciclo final
+
 Al intentar escribir a r0, todas las celdas de la memoria mantienen sus valores viejos, y el out del puerto que haya intentado hacer la escritura se vuelve 0, funcionando como un reset parcial solo para uno de los puertos.
 */
