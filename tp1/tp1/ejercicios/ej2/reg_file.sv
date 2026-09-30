@@ -13,7 +13,7 @@ import tp1_pkg::*;
 module reg_file #(
     parameter int DATA_WIDTH = 32,
     parameter int ADDR_WIDTH = 5
-)(
+) (
     input  logic                  clk,
     input  logic                  rst,
     // Puerto A (Read/Write con índice compartido regA_idx)
@@ -28,31 +28,42 @@ module reg_file #(
     input  logic                  regB_we
 );
 
-    localparam int NUM_REGS = 1 << ADDR_WIDTH;
+  localparam int NUM_REGS = 1 << ADDR_WIDTH; //8'b 100000
 
-    // Arreglo de registros
-    logic [DATA_WIDTH-1:0] rf [0:NUM_REGS-1];
+  // Arreglo de registros
+  logic [DATA_WIDTH-1:0] rf[0:NUM_REGS-1]; //Arreglo, hay DATA_WIDTH arreglos de tamaño NUM_REGS (hay 32 arreglos de  tamaño 32)
 
-    // Lectura sincrónica Read-First: se lee el contenido previo en regA_idx y regB_idx
-    // antes de que cualquier escritura modifique la posición de memoria en el flanco.
-    always_ff @(posedge clk or posedge rst) begin
-        if (rst) begin
-            regA_dout <= '0;
-            regB_dout <= '0;
-        end else begin
-            regA_dout <= (regA_idx == '0) ? '0 : rf[regA_idx];
-            regB_dout <= (regB_idx == '0) ? '0 : rf[regB_idx];
-        end
+  // Lectura sincrónica Read-First: se lee el contenido previo en regA_idx y regB_idx
+  // antes de que cualquier escritura modifique la posición de memoria en el flanco.
+  always_ff @(posedge clk or posedge rst) begin
+    if (rst) begin
+      regA_dout <= '0;
+      regB_dout <= '0;
+    end else begin
+      regA_dout <= (regA_idx == '0) ? '0 : rf[regA_idx];
+      regB_dout <= (regB_idx == '0) ? '0 : rf[regB_idx];
     end
+  end
 
-    // Escritura sincrónica en Puerto A y Puerto B (descarta escrituras en el registro 0)
-    always_ff @(posedge clk) begin
-        if (regA_we && (regA_idx != '0)) begin
-            rf[regA_idx] <= regA_din;
-        end
-        if (regB_we && (regB_idx != '0)) begin
-            rf[regB_idx] <= regB_din;
-        end
+  // Escritura sincrónica en Puerto A y Puerto B (descarta escrituras en el registro 0)
+  always_ff @(posedge clk) begin
+    if (regA_we && (regA_idx != '0)) begin
+      rf[regA_idx] <= regA_din;
     end
+    if (regB_we && (regB_idx != '0)) begin
+      rf[regB_idx] <= regB_din;
+    end
+  end
 
 endmodule
+
+/*
+Acción                                      |       dout A      |       dout B      |         R2        |
+Situación inicial                           |   32'h0000 000A   |   32'h0000 0014   |   32'h0000 0014   |
+A cambia a índice 2, antes del flanco       |   32'h0000 000A   |   32'h0000 0014   |   32'h0000 0014   |
+Después del siguiente flanco                |   32'h0000 0014   |   32'h0000 0014   |   32'h0000 0014   |
+Después de escribir 99 en R2 por A          |   32'h0000 0014   |   32'h0000 0014   |   32'h0000 0063   |
+Después del siguiente flanco sin escritura  |   32'h0000 0063   |   32'h0000 0063   |   32'h0000 0063   |
+
+Al intentar escribir a r0, todas las celdas de la memoria mantienen sus valores viejos, y el out del puerto que haya intentado hacer la escritura se vuelve 0, funcionando como un reset parcial solo para uno de los puertos.
+*/

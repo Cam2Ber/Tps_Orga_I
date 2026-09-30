@@ -26,3 +26,7 @@ module top_module (
         .opcode(op_q), .rf_we(rf_we), .result(result), .flags(alu_flags)
     );
 endmodule
+
+/*
+En el primer flanco se recibe la operacion y la posicion de los registros a aceder, junto con los permisos de escriura, sesteando la salida del registro hacia la operacion. En el segundo flanco se mantiene la lectura anterior para poder permitir que otros elementos la utilizen. En ambos casos para esta ejecucion las registries seleccionadas son R1 y R2. que serian 10 y 20, y en ese clock que se menciono donde se mantienen los valores para la lectura es donde se actuliza el output del ALU correctamente mostrando la operacion elegigida mediante un multiplexor basado en el opcode de las flags. En este caso el Opcode es 0 que corresponde a la suma, por lo tanto el output es la suma de 10 y 20, que seria 30. Posteriormente en el próximo clock como esta el write enable activado el registro A se ve sobrescrito, y luego de otro clock se actualiza el valor que esta siendo enviado por el registro hacia los operadores de la ALU. Repitiendo el "ciclo" de operaciones en la forma de una maquina de MOORE
+*/
